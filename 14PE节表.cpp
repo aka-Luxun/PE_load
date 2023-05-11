@@ -6,7 +6,7 @@ using namespace std;
 #define OFFSET(structure, member) ((int64_t)&((structure*)0)->member)
 #define MY_File_Path "C:\\Windows\\System32\\notepad.exe"
 #define	格式控制符 setw(25) << left
-#define	格式控制符HEX setw(10) << left << showbase <<  hex
+#define	格式控制符HEX setw(12) << left << showbase <<  hex
 #define 默认 "\033[0m" <<
 #define 红色 "\033[31m"<<
 #define 绿色 "\033[32m"<<
@@ -113,8 +113,11 @@ int main()
 		PE_NTHeader = (PIMAGE_NT_HEADERS32)((DWORD)File_Buffer+ PE_DosHeader->e_lfanew);
 		PE_PEHeader = (PIMAGE_FILE_HEADER)(((DWORD)File_Buffer + PE_DosHeader->e_lfanew+4));
 		PE_OptionHeader = (PIMAGE_OPTIONAL_HEADER32)((DWORD)File_Buffer + PE_DosHeader->e_lfanew + 0x18);
+		PE_SectionHeader = (PIMAGE_SECTION_HEADER)((DWORD)File_Buffer + PE_DosHeader->e_lfanew + 0xf8);
+		DWORD SectionCount = PE_PEHeader->NumberOfSections;
 		DWORD NToffset = PE_DosHeader->e_lfanew;
 		DWORD FileOffset = PE_DosHeader->e_lfanew + 4;
+		DWORD SectionOffset = PE_DosHeader->e_lfanew + 0xf8;
 		DWORD OpOffset = OFFSET(IMAGE_FILE_HEADER, Characteristics) + FileOffset + 2;
 		cout << 黄色 "----------------------------------NT头部信息(BEGIN)----------------------------------" << endl;
 		cout << 默认 格式控制符HEX << "地址偏移" << 格式控制符 << "变量名" << 格式控制符HEX << "大小" << 格式控制符HEX << "数值" << 格式控制符 << "说明" << endl;
@@ -158,7 +161,30 @@ int main()
 		for (int i = 0; i < 16; i++) {
 			cout << 默认 格式控制符HEX << OFFSET(IMAGE_OPTIONAL_HEADER32, DataDirectory[i]) + OpOffset << 格式控制符 << "DataDirectory" <<  格式控制符HEX << sizeof(PE_OptionHeader->DataDirectory[i]) << 格式控制符HEX << PE_OptionHeader->DataDirectory[i].Size << 格式控制符 << "数据目录在内存中的虚拟地址" << endl;
 		}
+		cout << 黄色 "----------------------------------NT头部信息(END)----------------------------------" << endl;
+		for (int j = 1; j < SectionCount + 1;j++) {
+			cout << 绿色 "----------------------------------Sections信息" << j << "----------------------------------" << endl;
+			cout << 默认 格式控制符HEX << "地址偏移" << 格式控制符 << "变量名" << 格式控制符HEX << "大小" << 格式控制符HEX << "数值" << 格式控制符 << "说明" << endl;
+			cout << 红色 斜体 格式控制符HEX << OFFSET(IMAGE_SECTION_HEADER, Name[7]) + SectionOffset + (j * 0x28) << 格式控制符 << "节表名" << 格式控制符HEX << sizeof(PE_SectionHeader->Name);
+			for (int i = 0; i < 8; i++) {
+				cout << PE_SectionHeader->Name[i];
+			}
+			cout << "\t\t" << 格式控制符 << "节表名" << endl;
+			cout << 默认 格式控制符HEX << OFFSET(IMAGE_SECTION_HEADER, Misc) + SectionOffset + (j * 0x28) << 格式控制符 << "Misc" << 格式控制符HEX << sizeof(PE_SectionHeader->Misc.PhysicalAddress) << 格式控制符HEX << PE_SectionHeader->Misc.PhysicalAddress << 格式控制符 << "内存中大小" << endl;
+			cout << 默认 格式控制符HEX << OFFSET(IMAGE_SECTION_HEADER, VirtualAddress) + SectionOffset + (j * 0x28) << 格式控制符 << "VirtualAddress" << 格式控制符HEX << sizeof(PE_SectionHeader->VirtualAddress) << 格式控制符HEX << PE_SectionHeader->VirtualAddress << 格式控制符 << "内存中偏移" << endl;
+			cout << 默认 格式控制符HEX << OFFSET(IMAGE_SECTION_HEADER, SizeOfRawData) + SectionOffset + (j * 0x28) << 格式控制符 << "SizeOfRawData" << 格式控制符HEX << sizeof(PE_SectionHeader->SizeOfRawData) << 格式控制符HEX << PE_SectionHeader->SizeOfRawData << 格式控制符 << "文件中大小" << endl;
+			cout << 默认 格式控制符HEX << OFFSET(IMAGE_SECTION_HEADER, PointerToRawData) + SectionOffset + (j * 0x28) << 格式控制符 << "PointerToRawData" << 格式控制符HEX << sizeof(PE_SectionHeader->PointerToRawData) << 格式控制符HEX << PE_SectionHeader->PointerToRawData << 格式控制符 << "文件中偏移" << endl;
+			cout << 默认 格式控制符HEX << OFFSET(IMAGE_SECTION_HEADER, PointerToRelocations) + SectionOffset + (j * 0x28) << 格式控制符 << "PointerToRelocation" << 格式控制符HEX << sizeof(PE_SectionHeader->PointerToRelocations) << 格式控制符HEX << PE_SectionHeader->PointerToRelocations << 格式控制符 << "重定位的偏移" << endl;
+			cout << 默认 格式控制符HEX << OFFSET(IMAGE_SECTION_HEADER, PointerToLinenumbers) + SectionOffset + (j * 0x28) << 格式控制符 << "PointerToLinenumbers" << 格式控制符HEX << sizeof(PE_SectionHeader->PointerToLinenumbers) << 格式控制符HEX << PE_SectionHeader->PointerToLinenumbers << 格式控制符 << "行号表的偏移" << endl;
+			cout << 默认 格式控制符HEX << OFFSET(IMAGE_SECTION_HEADER, NumberOfRelocations) + SectionOffset + (j * 0x28) << 格式控制符 << "NumberOfRelocations" << 格式控制符HEX << sizeof(PE_SectionHeader->NumberOfRelocations) << 格式控制符HEX << PE_SectionHeader->NumberOfRelocations << 格式控制符 << "重定位项数目" << endl;
+			cout << 默认 格式控制符HEX << OFFSET(IMAGE_SECTION_HEADER, NumberOfLinenumbers) + SectionOffset + (j * 0x28) << 格式控制符 << "NumberOfLinenumbers" << 格式控制符HEX << sizeof(PE_SectionHeader->NumberOfLinenumbers) << 格式控制符HEX << PE_SectionHeader->NumberOfLinenumbers << 格式控制符 << "行号表中行号的数目" << endl;
+			cout << 默认 格式控制符HEX << OFFSET(IMAGE_SECTION_HEADER, Characteristics) + SectionOffset + (j * 0x28) << 格式控制符 << "Characteristics" << 格式控制符HEX << sizeof(PE_SectionHeader->Characteristics) << 格式控制符HEX << PE_SectionHeader->Characteristics << 格式控制符 << "标志(块属性)" << endl;
+			PE_SectionHeader = (PIMAGE_SECTION_HEADER)((DWORD)File_Buffer + PE_DosHeader->e_lfanew + 0xf8 + (j * 0x28));
+		}
 	}
+	
+
+
 		
 	
 	system("Pause");
