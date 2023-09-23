@@ -1,0 +1,11 @@
+﻿  源.cpp
+D:\C++\Study\滴水第三期\9-10 LoadPE\源.cpp(142,20): warning C4018: “<”: 有符号/无符号不匹配
+D:\C++\Study\滴水第三期\9-10 LoadPE\源.cpp(170,20): warning C4018: “<”: 有符号/无符号不匹配
+D:\C++\Study\滴水第三期\9-10 LoadPE\源.cpp(244,22): warning C4018: “<”: 有符号/无符号不匹配
+D:\C++\Study\滴水第三期\9-10 LoadPE\源.cpp(490,20): warning C4018: “<”: 有符号/无符号不匹配
+D:\C++\Study\滴水第三期\9-10 LoadPE\源.cpp(616,21): warning C4018: “<”: 有符号/无符号不匹配
+  正在生成代码
+  Previous IPDB not found, fall back to full compilation.
+  All 144 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  已完成代码的生成
+  9-10 LoadPE.vcxproj -> D:\C++\Study\滴水第三期\9-10 LoadPE\Release\9-10 LoadPE.exe
